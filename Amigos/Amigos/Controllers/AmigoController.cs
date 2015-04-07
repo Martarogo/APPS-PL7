@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Amigos.DataAccessLayed;
 using Amigos.Models;
+using Newtonsoft.Json;//Para crear el Json
 
 namespace Amigos.Controllers
 {
@@ -152,6 +153,21 @@ namespace Amigos.Controllers
             db.Amigos.Remove(amigo);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        //GET: Amigo/REST
+        public String exampleJson(int id)
+        {
+            Amigo amigo = db.Amigos.Find(id);
+            if (amigo == null)
+            {
+                return "HTTP not found";
+            }
+            else
+            {
+                string answer = JsonConvert.SerializeObject(amigo);
+                return answer;
+            }
         }
 
         protected override void Dispose(bool disposing)
