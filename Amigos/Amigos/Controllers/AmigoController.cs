@@ -165,8 +165,7 @@ namespace Amigos.Controllers
             }
             else
             {
-                string answer = JsonConvert.SerializeObject(amigo);
-                return answer;
+                return JsonConvert.SerializeObject(amigo); ;
             }
         }
 
