@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;result&apos; in &apos;amigos.List.get(...)&apos; to &apos;output&apos;&#x0D;&#x0A;- Original project: &apos;MuestraAmigos&apos;&#x0D;&#x0A;- Original element: &apos;amigos.List.get(String).result&apos;&#x0D;&#x0A;- Renamed element: &apos;result&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;result&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;amigos{List.java[List~get~QString;@result!313!331!320!325!QString;!0!false" name="output" references="true" stamp="1429555028364" version="1.0"/>
+</session>
