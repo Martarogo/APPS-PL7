@@ -1,0 +1,69 @@
+package amigos;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.protocol.HttpRequestExecutor;
+
+public class List {
+	private static String DEFAULTURL = "http://localhost:54321/Amigo/api/AmigoApi";
+
+	public static String get2(String webPage){
+		String answer=null;
+		try {
+			answer=Request.Get(DEFAULTURL)
+			.connectTimeout(1000)
+			.socketTimeout(1000)
+			.execute().returnContent().asString();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return answer;
+	}
+	
+	public static String get3(String webPage) {
+	      URL url;
+	      String line, output = "";
+	      if(webPage.isEmpty()){
+	    	  webPage=DEFAULTURL;
+	      }
+	      try {
+	         url = new URL(webPage);
+	         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+	         conn.setRequestMethod("GET");
+	         BufferedReader buffer = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	         while ((line = buffer.readLine()) != null) {
+	            output=output+line;
+	         }
+	         buffer.close();
+	      } catch (Exception e) {
+	         e.printStackTrace();
+	      }
+	      return output;
+	   }
+	
+	public static String get(String webPage) {		
+		if (webPage.isEmpty()) {
+			webPage = DEFAULTURL;
+		}
+		Request.Get(webPage);
+		System.out.println(Request.Get(webPage).toString());
+		return Request.Get(webPage).toString();
+	}
+
+	public static void main(String args[]) {
+		System.out.println(get2(args[0]));
+	}
+}

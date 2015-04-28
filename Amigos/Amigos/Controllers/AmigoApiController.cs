@@ -17,13 +17,13 @@ namespace Amigos.Controllers.API
     {
         private AmigoDBContext db = new AmigoDBContext();
 
-        // GET: api/AmigoApi
+        // GET: api/AmigoApi (http://localhost:54321/api/amigo)
         public IQueryable<Amigo> GetAmigos()
         {
             return db.Amigos;
         }
 
-        // GET: api/AmigoApi/5
+        // GET: api/AmigoApi/5 (http://localhost:54321/api/amigo/2)
         [ResponseType(typeof(Amigo))]
         public IHttpActionResult GetAmigo(int id)
         {

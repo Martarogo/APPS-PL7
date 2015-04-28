@@ -1,0 +1,21 @@
+package amigos;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+
+public class UpdateFriend {
+	private static String DEFAULTURL = "http://localhost:54321/HtmlPruebas.html";
+
+	public static String post(String webPage) {
+		//HttpClient httpclient = new DefaultHttpClient();
+
+
+	}
+
+	public static void main(String args[]) {
+		System.out.println(post(args[0]));
+	}
+}
