@@ -27,8 +27,5 @@ public class MainClass {
 	public static void main(String args[]) {
 		System.out.println("Listado de amigos");
 		System.out.println(listFriends());
-		
-		System.out.println("Marta (id 2)");
-		System.out.println(getFriend(2));
 	}
 }

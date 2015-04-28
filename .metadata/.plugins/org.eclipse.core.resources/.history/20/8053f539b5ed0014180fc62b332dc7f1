@@ -15,20 +15,13 @@ public class MainClass {
 	}
 	
 	public static String getFriend(int i){
-		try {
-			String url=DEFAULTURL+Integer.toString(i);
-			return Request.Get(url).execute().returnContent().asString();
-		} catch (Exception e) {				
-			e.printStackTrace();
-			return "Error al obtener la lista de amigos";
-		} 
+		String friend=null;
+		
+		return friend;
 	}
 	
 	public static void main(String args[]) {
 		System.out.println("Listado de amigos");
 		System.out.println(listFriends());
-		
-		System.out.println("Marta (id 2)");
-		System.out.println(getFriend(2));
 	}
 }
