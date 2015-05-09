@@ -79,12 +79,13 @@ public class MainClass {
 	public static String updateinfo(String name, int lati, int longi){
 		String info=addInfo(name,lati,longi);
 		Request put=Request.Put(DEFAULTURL+name).bodyString(info, ContentType.create("application/x-www-form-urlencoded"));
+		System.out.println(put.toString());
 		try {
-			int code=put.execute().returnResponse().getStatusLine().getStatusCode();
-			if(code==HttpStatus.SC_NO_CONTENT){
+			Response resp=put.execute();
+			if(resp.returnResponse().getStatusLine().getStatusCode()==HttpStatus.SC_NO_CONTENT){
 				return "Done!";
 			}else{
-				return "HTTP"+code+"\r\nError: Server could not update "+name+"'s possition.";
+				return "HTTP"+resp.returnResponse().getStatusLine().getStatusCode()+"\r\nError: Server could not update "+name+"'s possition.";
 			}
 			
 		} catch (Exception e) {
