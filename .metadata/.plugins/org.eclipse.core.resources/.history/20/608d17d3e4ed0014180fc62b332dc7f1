@@ -1,0 +1,73 @@
+package amigos;
+
+import org.json.*;
+import org.json.simple.JSONObject;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+
+public class MainClass {
+	private static String DEFAULTURL = "http://localhost:54321/api/amigo/";
+	
+	public static String listFriends(){
+			try {
+				return Request.Get(DEFAULTURL).execute().returnContent().asString();
+			} catch (Exception e) {				
+				e.printStackTrace();
+				return "Error al obtener la lista de amigos";
+			} 
+	}
+	
+	public static String getFriend(int i){
+		try {
+			return Request.Get(DEFAULTURL+Integer.toString(i)).execute().returnContent().asString();
+		} catch (Exception e) {				
+			e.printStackTrace();
+			return "Error al obtener la lista de amigos";
+		} 
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public static String updateInfo(String name){
+		try {
+			/*JSONObject json=new JSONObject();
+			json.put("ID", 2);
+			json.put("name", "Marta");
+			json.put("longi", "-5,6686959");
+			json.put("lati","43,5325271");
+
+			return Request.Put(DEFAULTURL+name).bodyString(json.toString(), ContentType.DEFAULT_TEXT).execute().returnContent().asString();
+			*/
+			
+			/*
+			String body="{\"ID\":2,\"name\":\"Marta\",\"longi\":\" -5,6686959\",\"lati\":\"43,5325271\"}";
+			//String resp=Request.Post(DEFAULTURL).bodyString(body, ContentType.DEFAULT_TEXT).execute().returnContent().asString();
+			String resp=Request.Post(DEFAULTURL+name).useExpectContinue().version(HttpVersion.HTTP_1_1).bodyString(body, ContentType.DEFAULT_TEXT)
+	        .execute().returnContent().asString();
+			System.out.println();
+			return resp;
+			*/
+			//return Request.Post(DEFAULTURL+name).useExpectContinue().version(HttpVersion.HTTP_1_1).bodyString("Important stuff", ContentType.DEFAULT_TEXT).execute().returnContent().asString();
+			Request post=Request.Put(DEFAULTURL+name).bodyString("{\"ID\":2,\"name\":\"Marta\",\"longi\":\" -5,6686959\",\"lati\":\"43,5325271\"}", ContentType.APPLICATION_JSON);
+			System.out.println(post.toString());
+			return post.execute().returnContent().asString();
+		} catch (Exception e) {				
+			e.printStackTrace();
+			return "Error al actualizar la información";
+		} 
+	}
+	
+	public static void main(String args[]) {
+		System.out.println("Listado de amigos");
+		System.out.println(listFriends());
+		
+		System.out.println("Marta (id 2)");
+		System.out.println(getFriend(2));
+		
+		System.out.println("Actualiza Marta");
+		System.out.println(updateInfo("Marta"));
+		
+	}
+}

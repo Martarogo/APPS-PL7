@@ -1,0 +1,93 @@
+package amigos;
+
+import java.io.IOException;
+import java.util.jar.Attributes.Name;
+
+import org.apache.http.HttpStatus;
+import org.apache.http.HttpVersion;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
+import org.apache.http.client.fluent.Request;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.client.*;
+
+public class MainClass {
+	private static String DEFAULTURL = "http://localhost:54321/api/amigo/";
+	
+	/**
+	 * 
+	 * @return A list of all subscribed friends in a Json code
+	 */
+	public static String listFriends(){
+			try {
+				return Request.Get(DEFAULTURL).execute().returnContent().asString();
+			} catch (Exception e) {				
+				e.printStackTrace();
+				return "Error al obtener la lista de amigos";
+			} 
+	}
+	
+	/**
+	 * 
+	 * @param i ID of the selected friend
+	 * @return Data of this friend
+	 */
+	public static String getFriend(int i){
+		try {
+			return Request.Get(DEFAULTURL+Integer.toString(i)).execute().returnContent().asString();
+		} catch (Exception e) {				
+			e.printStackTrace();
+			return "Error al obtener la lista de amigos";
+		} 
+	}
+	
+	
+	public static String updateInfo(int id, int lati, int longi){
+		//String info=addInfo(id,lati,longi);
+		String info="ID=2&Name=Marta&longi=2&lati=3";
+		Request put=Request.Put(DEFAULTURL+Integer.toString(id)).bodyString(info, ContentType.create("application/x-www-form-urlencoded"));
+		System.out.println(put.toString());
+		try {
+			if(put.execute().returnResponse().getStatusLine().getStatusCode()==HttpStatus.SC_NO_CONTENT){
+				return "Done!";
+			}else{
+				return "Error: Server could not update "+id+"'s possition.";
+			}
+			
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return e.toString();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return e.toString();
+		}
+
+	}
+	/**
+	 * @param id Amigo's identifier-int
+	 * @param lati Amigo's latitude-int
+	 * @param longi Amigo's longitude-int
+	 * @return
+	 */
+	private static String addInfo(int id, int lati, int longi) {
+		//ID=2&Name=Marta&longi=3
+		return "ID="+Integer.toString(id)+"&lati="+Integer.toString(lati)+"&longi="+Integer.toString(longi);
+	}
+
+	public static void main(String args[]) {
+		System.out.println("Listado de amigos");
+		System.out.println(listFriends());
+		
+		System.out.println("Marta (id 2)");
+		System.out.println(getFriend(2));
+		
+		System.out.println("Actualiza Marta");
+		System.out.println(updateInfo(2,4,5));
+		System.out.println(getFriend(2));
+		
+	}
+}

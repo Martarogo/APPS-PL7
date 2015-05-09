@@ -17,13 +17,13 @@ namespace Amigos.Controllers.API
     {
         private AmigoDBContext db = new AmigoDBContext();
 
-        // GET: api/AmigoApi (http://localhost:54321/api/amigo)
+        // GET: api/amigo (http://localhost:54321/api/amigo)
         public IQueryable<Amigo> GetAmigos()
         {
             return db.Amigos;
         }
 
-        // GET: api/AmigoApi/5 (http://localhost:54321/api/amigo/2)
+        // GET: api/amigo/5 (http://localhost:54321/api/amigo/2)
         [ResponseType(typeof(Amigo))]
         public IHttpActionResult GetAmigo(int id)
         {
@@ -35,11 +35,12 @@ namespace Amigos.Controllers.API
 
             return Ok(amigo);
         }
-
-        // PUT: api/AmigoApi/5
+    
+        // PUT: api/amigo/5
         [ResponseType(typeof(void))]
         public IHttpActionResult PutAmigo(int id, Amigo amigo)
         {
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -71,7 +72,7 @@ namespace Amigos.Controllers.API
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/AmigoApi
+        // POST: api/amigo
         [ResponseType(typeof(Amigo))]
         public IHttpActionResult PostAmigo(Amigo amigo)
         {
@@ -86,7 +87,7 @@ namespace Amigos.Controllers.API
             return CreatedAtRoute("DefaultApi", new { id = amigo.ID }, amigo);
         }
 
-        // DELETE: api/AmigoApi/5
+        // DELETE: api/amigo/5
         [ResponseType(typeof(Amigo))]
         public IHttpActionResult DeleteAmigo(int id)
         {
