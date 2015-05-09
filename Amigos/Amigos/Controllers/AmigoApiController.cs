@@ -47,80 +47,46 @@ namespace Amigos.Controllers.API
             //If the parameter in the URL is int, is the ID of the friend
             int numID = 0;
             if (int.TryParse(id, out numID)){
-                numID = Convert.ToInt32(id);
-                if (numID != amigo.ID)
-                {
-                    return BadRequest();
-                }
-
-                db.Entry(amigo).State = EntityState.Modified;
-
-                try
-                {
-                    db.SaveChanges();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AmigoExists(numID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                return updateByID(numID,amigo);
             }else{
-                String name = Convert.ToString(id);
-                List<Amigo> list = new List<Amigo>();
-                foreach (Amigo friend in db.Amigos)
-                {
-                    if (friend.name==amigo.name)
-                    {
-                        list.Add(friend);
-                        break;
-                    }
-                }
-                if (!list.Any())
+                return updateByName(id,amigo);
+            }
+        }
+
+        private IHttpActionResult updateByID(int numID, Amigo amigo)
+        {
+            if (numID != amigo.ID)
+            {
+                return BadRequest();
+            }
+            Amigo toUpdate = db.Amigos.Find(numID);
+            toUpdate.longi = amigo.longi;
+            toUpdate.lati = amigo.lati;
+            db.Entry(toUpdate).State = EntityState.Modified;
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AmigoExists(numID))
                 {
                     return NotFound();
                 }
-                Amigo toUpdate=list[0];
-                toUpdate.lati = amigo.lati;
-                toUpdate.longi = amigo.longi;
-                db.Entry(toUpdate).State = EntityState.Modified;
-                try
+                else
                 {
-                    db.SaveChanges();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AmigoExists(amigo.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
             }
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-/*        //PUT: api/amigo/Marta
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutAmigo(String id, Amigo amigo)
+        private IHttpActionResult updateByName(String name, Amigo amigo)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             List<Amigo> list = new List<Amigo>();
             foreach (Amigo friend in db.Amigos)
             {
-                if (friend.name==amigo.name)
+                if (friend.name == amigo.name)
                 {
                     list.Add(friend);
                     break;
@@ -130,8 +96,10 @@ namespace Amigos.Controllers.API
             {
                 return NotFound();
             }
-            amigo.ID = list[0].ID;
-            db.Entry(amigo).State = EntityState.Modified;
+            Amigo toUpdate = list[0];
+            toUpdate.lati = amigo.lati;
+            toUpdate.longi = amigo.longi;
+            db.Entry(toUpdate).State = EntityState.Modified;
             try
             {
                 db.SaveChanges();
@@ -147,10 +115,8 @@ namespace Amigos.Controllers.API
                     throw;
                 }
             }
-
             return StatusCode(HttpStatusCode.NoContent);
         }
- * */
 
         // POST: api/amigo
         [ResponseType(typeof(Amigo))]

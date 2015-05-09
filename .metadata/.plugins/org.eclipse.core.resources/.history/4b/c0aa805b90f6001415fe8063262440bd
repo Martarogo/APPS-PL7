@@ -2,6 +2,7 @@ package amigos;
 
 import org.apache.http.HttpStatus;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
 import org.apache.http.entity.ContentType;
 
 
@@ -15,9 +16,9 @@ public class MainClass {
 		System.out.println("-------------------------------Marta (id 2)-------------------------------");
 		System.out.println(getFriend(2));
 		
-		System.out.println("-------------------------------Actualiza por ID-------------------------------");
-		System.out.println(updateInfo(2,4,5));
-		System.out.println(getFriend(2));
+//		System.out.println("-------------------------------Actualiza por ID-------------------------------");
+//		System.out.println(updateInfo(2,4,5));
+//		System.out.println(getFriend(2));
 		
 		System.out.println("-------------------------------Actualiza por nombre-------------------------------");
 		System.out.println(updateinfo("Marta", 1, 3));
@@ -56,11 +57,12 @@ public class MainClass {
 	 * @param id ID of the selected friend
 	 * @param lati latitude of this friend's position
 	 * @param longi longitude of this friend's position
-	 * @return  State of the operation 
+	 * @return  State of the opperation 
 	 */
 	public static String updateInfo(int id, int lati, int longi){
 		String info=addInfo(id,lati,longi);
 		Request put=Request.Put(DEFAULTURL+Integer.toString(id)).bodyString(info, ContentType.create("application/x-www-form-urlencoded"));
+		System.out.println(put.toString());
 		try {
 			if(put.execute().returnResponse().getStatusLine().getStatusCode()==HttpStatus.SC_NO_CONTENT){
 				return "Done!";
@@ -74,13 +76,6 @@ public class MainClass {
 		} 
 	}
 
-	/**
-	 * Updates the position of a registered member of Amigo's REST application
-	 * @param name of the selected friend
-	 * @param lati latitude of this friend's position
-	 * @param longi longitude of this friend's position
-	 * @return  State of the operation 
-	 */
 	public static String updateinfo(String name, int lati, int longi){
 		String info=addInfo(name,lati,longi);
 		Request put=Request.Put(DEFAULTURL+name).bodyString(info, ContentType.create("application/x-www-form-urlencoded"));
