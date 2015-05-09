@@ -38,42 +38,79 @@ namespace Amigos.Controllers.API
     
         // PUT: api/amigo/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutAmigo(int id, Amigo amigo)
+        public IHttpActionResult PutAmigo(String id, Amigo amigo)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            //If the parameter in the URL is int, is the ID of the friend
+            int numID = 0;
+            if (int.TryParse(id, out numID)){
+                numID = Convert.ToInt32(id);
+                if (numID != amigo.ID)
+                {
+                    return BadRequest();
+                }
 
-            if (id != amigo.ID)
-            {
-                return BadRequest();
-            }
+                db.Entry(amigo).State = EntityState.Modified;
 
-            db.Entry(amigo).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AmigoExists(id))
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AmigoExists(numID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }else{
+                String name = Convert.ToString(id);
+                List<Amigo> list = new List<Amigo>();
+                foreach (Amigo friend in db.Amigos)
+                {
+                    if (friend.name==amigo.name)
+                    {
+                        list.Add(friend);
+                        break;
+                    }
+                }
+                if (!list.Any())
                 {
                     return NotFound();
                 }
-                else
+                Amigo toUpdate=list[0];
+                toUpdate.lati = amigo.lati;
+                toUpdate.longi = amigo.longi;
+                db.Entry(toUpdate).State = EntityState.Modified;
+                try
                 {
-                    throw;
+                    db.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AmigoExists(amigo.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
-
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        //PUT: api/amigo/Marta
+/*        //PUT: api/amigo/Marta
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutAmigo(String name, Amigo amigo)
+        public IHttpActionResult PutAmigo(String id, Amigo amigo)
         {
             if (!ModelState.IsValid)
             {
@@ -113,6 +150,7 @@ namespace Amigos.Controllers.API
 
             return StatusCode(HttpStatusCode.NoContent);
         }
+ * */
 
         // POST: api/amigo
         [ResponseType(typeof(Amigo))]
