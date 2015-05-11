@@ -16,11 +16,11 @@ public class MainClass {
 		System.out.println(getFriend(2));
 		
 		System.out.println("-------------------------------Actualiza por ID-------------------------------");
-		System.out.println(updateInfo(2,"4","-5,6686959"));
+		System.out.println(updateInfo(2,4,Integer.parseInt("-5,6686959")));
 		System.out.println(getFriend(2));
 		
 		System.out.println("-------------------------------Actualiza por nombre-------------------------------");
-		System.out.println(updateinfo("Marta", "43,5325271", "-5,6686959"));
+		System.out.println(updateinfo("Marta", Integer.parseInt("43,5325271"), 3));
 		System.out.println(getFriend(2));	
 	}
 	
@@ -55,11 +55,11 @@ public class MainClass {
 	 * Updates the position of a registered member of Amigo's REST application
 	 * @param id ID of the selected friend
 	 * @param lati latitude of this friend's position
-	 * @param string longitude of this friend's position
+	 * @param longi longitude of this friend's position
 	 * @return  State of the operation 
 	 */
-	public static String updateInfo(int id, String lati, String string){
-		String info=addInfo(id,lati,string);
+	public static String updateInfo(int id, int lati, int longi){
+		String info=addInfo(id,lati,longi);
 		Request put=Request.Put(DEFAULTURL+Integer.toString(id)).bodyString(info, ContentType.create("application/x-www-form-urlencoded"));
 		try {
 			if(put.execute().returnResponse().getStatusLine().getStatusCode()==HttpStatus.SC_NO_CONTENT){
@@ -81,7 +81,7 @@ public class MainClass {
 	 * @param longi longitude of this friend's position
 	 * @return  State of the operation 
 	 */
-	public static String updateinfo(String name, String lati, String longi){
+	public static String updateinfo(String name, int lati, int longi){
 		String info=addInfo(name,lati,longi);
 		Request put=Request.Put(DEFAULTURL+name).bodyString(info, ContentType.create("application/x-www-form-urlencoded"));
 		try {
@@ -105,8 +105,8 @@ public class MainClass {
 	 * @param longiAmigo's longitude
 	 * @return
 	 */
-	private static String addInfo(String name, String lati, String longi) {
-		return "name="+name+"&lati="+lati+"&longi="+longi;
+	private static String addInfo(String name, int lati, int longi) {
+		return "name="+name+"&lati="+Integer.toString(lati)+"&longi="+Integer.toString(longi);
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class MainClass {
 	 * @param longi Amigo's longitude-int
 	 * @return
 	 */
-	private static String addInfo(int id, String lati, String longi) {
-		return "ID="+Integer.toString(id)+"&lati="+lati+"&longi="+longi;
+	private static String addInfo(int id, int lati, int longi) {
+		return "ID="+Integer.toString(id)+"&lati="+Integer.toString(lati)+"&longi="+Integer.toString(longi);
 	}
 }
