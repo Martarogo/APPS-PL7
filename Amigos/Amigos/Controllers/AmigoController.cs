@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using Amigos.DataAccessLayed;
 using Amigos.Models;
+using System.Globalization;
 using Newtonsoft.Json;//Para crear el Json
 
 namespace Amigos.Controllers
@@ -15,6 +16,8 @@ namespace Amigos.Controllers
     public class AmigoController : Controller
     {
         private AmigoDBContext db = new AmigoDBContext();
+        private readonly String FORMATERROR = "#formaterror";
+        private CultureInfo culture = new CultureInfo("en");
 
         // GET: Amigo
         public ActionResult Index()
@@ -52,9 +55,18 @@ namespace Amigos.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Amigos.Add(amigo);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                amigo.lati = decimalFormat(amigo.lati);
+                amigo.longi = decimalFormat(amigo.longi);
+                if (amigo.lati == FORMATERROR || amigo.longi == FORMATERROR || validCoord(amigo.lati, amigo.longi))
+                {
+                    RedirectToAction("Create");
+                }
+                else
+                {
+                    db.Amigos.Add(amigo);
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
 
             return View(amigo);
@@ -70,7 +82,10 @@ namespace Amigos.Controllers
         [HttpPost]
         public ActionResult Distance([Bind(Include = "ID,name,longi,lati")] Amigo ami, string distance)
         {
-            if(Convert.ToDouble(distance)<0||Math.Abs(Convert.ToDouble(ami.lati))>90||Math.Abs(Convert.ToDouble(ami.longi))>90){
+            ami.longi = decimalFormat(ami.longi);
+            ami.lati = decimalFormat(ami.lati);
+            if (Convert.ToDouble(distance) < 0 || validCoord(ami.lati, ami.longi))
+            {
                 return View();
             }else{
                 return RedirectToAction("Closest", new { lati=ami.lati, longi=ami.longi, radium=distance});
@@ -83,13 +98,14 @@ namespace Amigos.Controllers
             Amigo me = new Amigo();
             me.lati = lati;
             me.longi = longi;
-            double maxDistance = Convert.ToDouble(radium);
+            if (radium.Contains(",")) radium = radium.Replace(",", ".");
+            double maxDistance =Double.Parse(radium,culture);
 
             List<Amigo> lista = new List<Amigo>();
 
             foreach (Amigo friend in db.Amigos)
             {
-                if (me.getDistance(friend) <= Convert.ToDouble(radium))
+                if (me.getDistance(friend) <= maxDistance)
                 {
                     lista.Add(friend);
                 }
@@ -122,9 +138,18 @@ namespace Amigos.Controllers
             if (ModelState.IsValid)
             //Este condicional sirve para determinar si los datos recibidos son válidos para crear un nuevo objeto e insertarlo en la base de datos.
             {
-                db.Entry(amigo).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                amigo.lati = decimalFormat(amigo.lati);
+                amigo.longi = decimalFormat(amigo.longi);
+                if (amigo.lati == FORMATERROR || amigo.longi == FORMATERROR || validCoord(amigo.lati, amigo.longi))
+                {
+                    RedirectToAction("Edit");
+                }
+                else
+                {
+                    db.Entry(amigo).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
             }
             return View(amigo);
         }
@@ -176,6 +201,36 @@ namespace Amigos.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private String decimalFormat(String n)
+        {
+            if (n.Contains(","))
+            {
+                if (n.Contains("."))
+                {
+                    return FORMATERROR;
+                }
+                n = n.Replace(",", ".");
+            }
+            try
+            {
+                double aux = Double.Parse(n,culture);
+                return aux.ToString(culture);
+            }
+            catch (FormatException)
+            {
+                return FORMATERROR;
+            }
+        }
+
+        private bool validCoord(String lati, String longi)
+        {
+            if ((Math.Abs(Double.Parse(lati,culture)) > 90) || (Math.Abs(Double.Parse(longi,culture)) > 180))
+            {
+                return true;
+            }
+            else return false;
         }
     }
 }
